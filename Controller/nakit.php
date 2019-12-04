@@ -27,73 +27,124 @@ class nakit extends controller
     }
 
 
-    function ayhan(){
+    function ayhan()
+    {
 
-       $d = $this->sistem("pdf");
-       var_dump($d);
+        $d = $this->sistem("pdf");
+        var_dump($d);
     }
-    function transefer(){
+    function paracikisi()
+    {
+        $cls = $this->Model("nakit/anasayfa");
+        $cikankasabanka = $cls->b_k($this->val->b_k_id);
+
+
+        $gsonmiktar =  $cikankasabanka = $cikankasabanka->bakiye;
+
+
+        $cikankasabanka = str_replace(array(".", ","), array("", "."), $cikankasabanka);
+        $miktar = str_replace(array(".", ","), array("", "."), $this->val->miktar);
+
+        $yenideger = $cikankasabanka - $miktar;
+        $yenideger = number_format($yenideger, 2, ',', '.');
+        $cls->b_k_bakiye_update($yenideger, $this->val->b_k_id);
+
+        $data["cikis_b_k"] = $this->val->b_k_id;
+
+        $data["cikan_hesap_son_miktar"] = $gsonmiktar;
+        $data["cikan_miktar"] = $this->val->miktar;
+        $data["cikis_doviz"] = $this->val->doviz;
+        $data["tarih"] = date_format(date_create($this->val->tarih), "Y-m-d");
+        $data["islem"] = "N_CIKIS";
+        $data["aciklama"] = $this->val->aciklama;
+        $id = $cls->kaydet("kasa_haraketleri", $data);
+
+    }
+
+    function paragirisi()
+    {
+        $cls = $this->Model("nakit/anasayfa");
+        $cikankasabanka = $cls->b_k($this->val->b_k_id);
+
+
+        $gsonmiktar =  $cikankasabanka = $cikankasabanka->bakiye;
+
+
+        $cikankasabanka = str_replace(array(".", ","), array("", "."), $cikankasabanka);
+        $girennmiktar = str_replace(array(".", ","), array("", "."), $this->val->giris_miktar);
+
+        $yenideger = $cikankasabanka + $girennmiktar;
+        $yenideger = number_format($yenideger, 2, ',', '.');
+        $cls->b_k_bakiye_update($yenideger, $this->val->b_k_id);
+
+        $data["giris_b_k"] = $this->val->b_k_id;
+
+        $data["giris_hesap_son_miktar"] = $gsonmiktar;
+        $data["giris_miktar"] = $this->val->giris_miktar;
+        $data["giris_doviz"] = $this->val->giris_doviz;
+        $data["tarih"] = date_format(date_create($this->val->transfer_trh), "Y-m-d");
+        $data["islem"] = "N_GIRIS";
+        $data["aciklama"] = $this->val->aciklama;
+        $id = $cls->kaydet("kasa_haraketleri", $data);
+
+    }
+
+
+    function transefer()
+    {
 
         $cls = $this->Model("nakit/anasayfa");
 
 
         $cikankasabanka = $cls->b_k($this->val->cikis_b_k);
         $cikankasabanka = $cikankasabanka->bakiye;
+        $csonmiktar = $cikankasabanka;
 
-        $cikankasabanka =  str_replace(array(".",","),array("","."),$cikankasabanka);
-        $cikanmiktar =  str_replace(array(".",","),array("","."),$this->val->cikan_miktar);
+        $cikankasabanka = str_replace(array(".", ","), array("", "."), $cikankasabanka);
+        $cikanmiktar = str_replace(array(".", ","), array("", "."), $this->val->cikan_miktar);
 
         $yenideger = $cikankasabanka - $cikanmiktar;
-
-        $cls->b_k_bakiye_update($yenideger,$this->val->cikis_b_k);
-
-
-
-
+        $yenideger = number_format($yenideger, 2, ',', '.');
+        $cls->b_k_bakiye_update($yenideger, $this->val->cikis_b_k);
 
         // çıkan miktarı ana bakşyeden düş
 
 
-
-
-
-
-
-
-
-
-
-
         // giren miktarı ana bakıyeye ekle
         $girenkasabanka = $cls->b_k($this->val->giris_b_k);
-        $girenkasabanka = $cgirenkasabanka->bakiye;
-
-        $girenkasabanka =  str_replace(array(".",","),array("","."),$cgirenkasabanka);
-        $girenmiktar =  str_replace(array(".",","),array("","."),$this->val->giris_miktar);
-
-        $yenideger = $girenkasabanka - $girenmiktar;
-
-        $cls->b_k_bakiye_update($yenideger,$this->val->giris_b_k);
+        $girenkasabanka = $girenkasabanka->bakiye;
+        $gsonmiktar = $girenkasabanka;
 
 
+        $girenkasabanka = str_replace(array(".", ","), array("", "."), $girenkasabanka);
+        $girenmiktar = str_replace(array(".", ","), array("", "."), $this->val->giris_miktar);
 
 
+        $yenideger = "";
+        $yenideger = $girenkasabanka + $girenmiktar;
+        $yenideger = number_format($yenideger, 2, ',', '.');
 
+        $cls->b_k_bakiye_update($yenideger, $this->val->giris_b_k);
 
         $data["cikis_b_k"] = $this->val->cikis_b_k;
-        $data["giris_b_k"]  = $this->val->giris_b_k;
-        $data["cikan_miktar"]  =$this->val->cikan_miktar;
-        $data["cikis_doviz"]  = $this->val->cikis_doviz;
-        $data["giris_miktar"]  =$this->val->giris_miktar;
-        $data["giris_doviz"]  =$this->val->giris_doviz;
-        $data["tarih"]  = date_format(date_create($this->val->transfer_trh), "Y-m-d");
-        $data["islem"]  = "TRANSFER" ;
+        $data["giris_b_k"] = $this->val->giris_b_k;
+        $data["cikan_hesap_son_miktar"] = $csonmiktar;
+        $data["cikan_miktar"] = $this->val->cikan_miktar;
+        $data["cikis_doviz"] = $this->val->cikis_doviz;
+
+        $data["giris_hesap_son_miktar"] = $gsonmiktar;
+        $data["giris_miktar"] = $this->val->giris_miktar;
+        $data["giris_doviz"] = $this->val->giris_doviz;
+        $data["tarih"] = date_format(date_create($this->val->transfer_trh), "Y-m-d");
+        $data["islem"] = "TRANSFER";
+        $data["aciklama"] = $this->val->aciklama;
 
 
-        $id = $cls->kaydet("kasa_haraketleri",$data);
+        $id = $cls->kaydet("kasa_haraketleri", $data);
 
 
     }
+
     function banka_ekle()
     {
         $data["cls"] = $this->Model("nakit/anasayfa");
@@ -168,7 +219,7 @@ class nakit extends controller
     function kasa_banka()
     {
 
-        //  $this->cache->start();         
+        //  $this->cache->start();
         $data["lang"] = ayhan::$dil;
 
         if (isset($this->val->kayit) == "ok") {
@@ -193,7 +244,7 @@ class nakit extends controller
     {
 
 
-        //  $this->cache->start();         
+        //  $this->cache->start();
         $data["lang"] = ayhan::$dil;
 
 
@@ -441,4 +492,10 @@ class nakit extends controller
 
 
     }
+
+    function arsiveal(){
+        echo $this->Model("nakit/anasayfa")->kasabankaarsiv($this->val->id);
+
+    }
 }
+

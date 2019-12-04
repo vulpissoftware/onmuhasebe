@@ -16,10 +16,8 @@
                     <div class="caption">
                         <i class="fa fa-bank font-green-haze"></i>
                         <span class="caption-subject font-green-haze bold uppercase">NAKİT İŞLEMLER</span>
-                        / <a href="<?php SELF::go("nakit/kasa_banka"); ?>"><span
-                                    class="caption-helper">KASA VE BANKALAR</span></a> / <span class="caption-helper"><?php
-
-                            if ($b_k->b_k == "KASA") echo "KASA HESABI"; else echo "BANKA"; ?></span>
+                        / <a href="<?php SELF::go("nakit/kasa_banka"); ?>"><span class="caption-helper">KASA VE BANKALAR</span></a> / <span class="caption-helper">
+                            <?php if ($b_k->b_k == "KASA") echo "KASA HESABI"; else echo "BANKA"; ?></span>
                     </div>
                     <?php if ($mesaj): ?>
                         <div class="custom-alerts alert alert-success fade in">
@@ -32,6 +30,50 @@
             <div class="page-footer"></div>
             <div class="row">
 
+                <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true"
+                     style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true"></button>
+                                <h4 class="modal-title">
+                                <?php if($b_k->bakiye == 0 || $b_k->bakiye == ""): ?>
+                                    Bu kasa/banka kaydını arşivlemek istediğinize emin misiniz?
+                                 <?php else: ?>
+                                    Kayıt arşivlenemiyor
+                                 <?php endif; ?>
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <?php if($b_k->bakiye == 0 || $b_k->bakiye == ""): ?>
+                                <p> Arşivleme işleminin sonucunda:</p>
+                                <ul>
+                                   <li> Kayıt artık Kasa ve Bankalar listelerinde görünmeyecek.</li>
+                                   <li> Bu kasa/banka'ya işlenmiş kayıtlar etkilenmeyecek.</li>
+                                </ul>
+                                <?php else: ?>
+                                    <p> Bu kasa/banka hesabı kaydı aşağıdaki sebep(ler)den ötürü arşivlenemiyor:</p>
+                                    <ul>
+                                        <li> Hesabın bakiyesi Sıfır değil..</li>
+
+                                    </ul>
+                                <?php endif; ?>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn dark btn-outline" data-dismiss="modal">
+                                    KAPAT
+                                </button>
+                                <?php if($b_k->bakiye == 0 || $b_k->bakiye == ""): ?>
+                                <button onclick="arsiveal(<?php echo $id; ?>)" type="button" class="btn green">ARŞİVLE</button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
 
                 <div class="col-md-8">
                     <div class="portlet light form-fit bordered">
@@ -43,6 +85,7 @@
 
 
                                 <span class="caption-subject font-green bold uppercase"><?php echo $b_k->ad; ?></span>
+
                             </div>
                             <div class="actions">
                                 <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
@@ -58,18 +101,101 @@
                         </div>
                         <div class="portlet-body form">
                             <div class="mt-clipboard-container">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis luctus elit, in
-                                    auctor libero suscipit id. Nulla efficitur purus ac rutrum efficitur.
-                                    <span id="mt-target-4" class="mt-highlight bg-yellow-lemon">Donec hendrerit, ipsum sit amet maximus dignissim</span>,
-                                    erat est porttitor leo, ac porttitor sem ex sit amet odio. Suspendisse bibendum
-                                    rhoncus tortor, luctus placerat nibh convallis in.</p>
-                                <a href="javascript:;" class="btn green-turquoise mt-clipboard"
-                                   data-clipboard-action="copy" data-clipboard-target="#mt-target-4">
-                                    <i class="icon-note"></i> Copy Highlighted Text</a>
-                                <a href="javascript:;" class="btn purple-seance mt-clipboard"
-                                   data-clipboard-action="copy"
-                                   data-clipboard-text="You found me! Just because you can't see me doesn't mean you can't copy me.">
-                                    <i class="icon-note"></i> Copy Hidden Text</a>
+
+
+                                <table class="table table-striped responsive">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">İşlem türü</th>
+                                        <th scope="col">İşlem Tarihi</th>
+                                        <th scope="col">İlgili Hesap</th>
+                                        <th scope="col">Açıklama</th>
+                                        <th scope="col">Meblağ</th>
+                                        <th scope="col">Bakiye</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php if($b_k->acilis_bakiye): ?>
+                                    <tr>
+                                        <td><?php echo "AÇILIŞ BAKİYESİ" ?></td>
+                                        <td><?php echo date_format(date_create($b_k->acilis_tarih), "d-m-Y"); ?></td>
+                                        <td><?php ?></td>
+                                        <td><?php echo "Hesap açılış Bakiyesi"; ?></td>
+                                        <td><?php echo $b_k->acilis_bakiye; ?></td>
+                                        <td><?php echo $b_k->acilis_bakiye; ?></td>
+                                    </tr>
+
+                                  <?php endif;  $veri = $cls->hesapharaketleri($id);
+                                    if ($veri->veri):
+
+                                    foreach ($veri->veri as $haraketler):
+                                     ?>
+
+                                    <tr>
+
+                                        <td>
+                         <?php $bk = 0;
+                         if($haraketler->islem == "TRANSFER") {
+                             $bk = 1;
+                             echo "TRANSFER";
+                         }
+                         else if($haraketler->islem == "N_GIRIS"){
+                             $bk = 1;
+                                   echo "NAKİT GİRİŞ";
+                         }
+                         else if($haraketler->islem == "N_CIKIS"){
+                             $bk = 1;
+                                   echo "NAKİT ÇIKIŞ";
+                         }
+                         ?>
+                                        </td>
+                                        <td><?php echo date_format(date_create($haraketler->tarih), "d-m-Y"); ?></td>
+
+
+                                        <td>
+                                        <?php
+                                            if($bk==1 && $id != $haraketler->cikis_b_k){
+                                              echo  $cls->b_k_ad($haraketler->cikis_b_k);
+                                            }
+                                            elseif ($bk==1 && $id != $haraketler->giris_b_k) {
+                                                echo  $cls->b_k_ad($haraketler->giris_b_k);
+                                            }
+                                         ?>
+
+                                        </td>
+                                        <td>
+                                            <?php if($bk==1 && !$haraketler->aciklama){
+                                                echo    "<span class=\"caption-subject font-green bold uppercase\" >".$cls->b_k_ad($haraketler->cikis_b_k) ." <i class=\"fa fa-long-arrow-right \" aria-hidden=\"true\"></i> ".$cls->b_k_ad($haraketler->giris_b_k) ."</span>";
+                                            } else echo $haraketler->aciklama; ?>  </td>
+                                        <td><?php
+
+                                            if($haraketler->cikis_b_k == $id){
+
+                                                echo "- $haraketler->cikan_miktar";
+                                            } else if($haraketler->giris_b_k == $id)
+                                            echo  $haraketler->giris_miktar ;
+
+                                            ?></td>
+                                        <td><?php
+
+                                            if($haraketler->cikis_b_k == $id){
+
+                                                echo  $haraketler->cikan_hesap_son_miktar;
+                                            } else if($haraketler->giris_b_k == $id)
+                                              echo  $haraketler->giris_hesap_son_miktar;
+
+                                            ?></td> </tr>
+
+                                <?php  endforeach;  endif; ?>
+                                    <tr><td colspan="5"></td><td colspan="1"><h5><?php if($b_k->bakiye) echo  $b_k->bakiye  ." " .$b_k->acilis_doviz; ?></h5></td></tr>
+                                      </tbody>
+                                </table>
+
+
+
+
+
+
                             </div>
                         </div>
                     </div>
@@ -87,7 +213,7 @@
 
                                 <button type="button" class="btn purple-plum">Bakiye Sabitle</button>
 
-                                <button type="button" class="btn yellow-crusta">Hesabı Arşivle</button>
+                                <button type="button"  data-toggle="modal" href="#basic" class="btn yellow-crusta">Hesabı Arşivle</button>
 
                                 <button type="button" class="btn red-sunglo"><i class="icon-trash"></i> Hesabı Sil
                                 </button>
@@ -540,7 +666,7 @@
                                     <div class="form-actions">
                                         <div class="row">
                                             <div class="col-md-offset-3 col-md-9">
-                                                <button type="submit" class="btn green">
+                                                <button type="submit" onclick="paragirisiekle();return false;" class="btn green">
                                                     <i class="fa fa-plus"></i> KAYDET
                                                 </button>
                                                 <button type="button" class="btn default" onclick="pge()"> VAZGEÇ
@@ -635,7 +761,7 @@
                                     <div class="form-actions">
                                         <div class="row">
                                             <div class="col-md-offset-3 col-md-9">
-                                                <button type="submit" class="btn green">
+                                                <button type="submit" onclick="paracikisiekle(); return false;" class="btn green">
                                                     <i class="fa fa-plus"></i> KAYDET
                                                 </button>
                                                 <button type="button" class="btn default" onclick="pce();return false;"> VAZGEÇ

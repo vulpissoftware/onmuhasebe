@@ -16,7 +16,12 @@ class anasayfa_sql extends load
         parent::__construct();
         $this->data = new stdClass;
     }
+    function kasabankaarsiv($id){
+        $data["arsiv"] = 1;
+        $this->update("banka_kasa",$data,"id = $id");
+        return $id;
 
+    }
     function urun_kategori_ad($id)
     {
         return $this->db->get_var("SELECT isim FROM urun_kategori WHERE id = '$id' ");
@@ -43,12 +48,24 @@ class anasayfa_sql extends load
 
     }
 
-    function banka_kasa_list($sira = 1, $gosterim_adet = SAYFALAMA_ADET)
+
+    function hesapharaketleri($id , $sira = 1, $gosterim_adet = SAYFALAMA_ADET)
     {
-        $this->data->toplam = $this->db->get_var("select count(id) from banka_kasa ");
+        $this->data->toplam = $this->db->get_var("select count(id) from kasa_haraketleri WHERE cikis_b_k = $id OR giris_b_k = $id   ");
         $this->data->sayfa = ceil($this->data->toplam / $gosterim_adet);
         $ilk = ($sira - 1) * $gosterim_adet;
-        $this->data->veri = $this->db->get_results("select * from banka_kasa  LIMIT $ilk , $gosterim_adet");
+        $this->data->veri = $this->db->get_results("select * from kasa_haraketleri  WHERE cikis_b_k = $id OR giris_b_k = $id   LIMIT $ilk , $gosterim_adet");
+        return $this->data;
+    }
+
+
+
+    function banka_kasa_list($sira = 1, $gosterim_adet = SAYFALAMA_ADET)
+    {
+        $this->data->toplam = $this->db->get_var("select count(id) from banka_kasa WHERE arsiv = 0 ");
+        $this->data->sayfa = ceil($this->data->toplam / $gosterim_adet);
+        $ilk = ($sira - 1) * $gosterim_adet;
+        $this->data->veri = $this->db->get_results("select * from banka_kasa  WHERE arsiv = 0  LIMIT $ilk , $gosterim_adet");
         return $this->data;
     }
 
@@ -62,7 +79,10 @@ class anasayfa_sql extends load
         $this->update("banka_kasa",$data,"id = $id");
 
     }
-
+    function b_k_ad($id)
+    {
+        return $this->db->get_var("select ad from banka_kasa where id = $id ");
+    }
     function b_k($id)
     {
         return $this->db->get_row("select * from banka_kasa where id = $id ");
@@ -70,7 +90,7 @@ class anasayfa_sql extends load
 
     function banka_kasa()
     {
-        return $this->db->get_results("select * from banka_kasa ");
+        return $this->db->get_results("select * from banka_kasa  WHERE arsiv = 0 ");
     }
 
     function bankalar()
@@ -97,7 +117,7 @@ class anasayfa_sql extends load
 
     function digerb_k($id)
     {
-        return $this->db->get_results("select * from banka_kasa  where id != $id  ");
+        return $this->db->get_results("select * from banka_kasa  where id != $id AND  WHERE arsiv = 0  ");
 
     }
 
