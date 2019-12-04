@@ -1,4 +1,7 @@
-<?php $b_k = $cls->b_k($id); ?>
+<?php
+$b_k = $cls->b_k($id);
+$veri = $cls->hesapharaketleri($id);
+?>
 <script>
     var sayfakur = '<?php echo $b_k->acilis_doviz; ?>';
 
@@ -38,6 +41,11 @@
                                 <button type="button" class="close" data-dismiss="modal"
                                         aria-hidden="true"></button>
                                 <h4 class="modal-title">
+                                    <div class="caption">
+                                        <?php if ($b_k->b_k == "KASA") echo "<i class=\"fa fa-money font-green\"></i>"; else echo "<i class=\"fa fa-bank font-green\"></i>"; ?>
+                                        <span class="caption-subject font-green bold uppercase"><?php echo $b_k->ad; ?></span>
+                                    </div>
+
                                 <?php if($b_k->bakiye == 0 || $b_k->bakiye == ""): ?>
                                     Bu kasa/banka kaydını arşivlemek istediğinize emin misiniz?
                                  <?php else: ?>
@@ -48,13 +56,13 @@
                             <div class="modal-body">
                                 <?php if($b_k->bakiye == 0 || $b_k->bakiye == ""): ?>
                                 <p> Arşivleme işleminin sonucunda:</p>
-                                <ul>
+                                <ul class="bg-red-thunderbird bg-font-red-thunderbird">
                                    <li> Kayıt artık Kasa ve Bankalar listelerinde görünmeyecek.</li>
                                    <li> Bu kasa/banka'ya işlenmiş kayıtlar etkilenmeyecek.</li>
                                 </ul>
                                 <?php else: ?>
                                     <p> Bu kasa/banka hesabı kaydı aşağıdaki sebep(ler)den ötürü arşivlenemiyor:</p>
-                                    <ul>
+                                    <ul class="bg-red-thunderbird bg-font-red-thunderbird">
                                         <li> Hesabın bakiyesi Sıfır değil..</li>
 
                                     </ul>
@@ -62,7 +70,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">
-                                    KAPAT
+                                    VAZGEÇ
                                 </button>
                                 <?php if($b_k->bakiye == 0 || $b_k->bakiye == ""): ?>
                                 <button onclick="arsiveal(<?php echo $id; ?>)" type="button" class="btn green">ARŞİVLE</button>
@@ -73,6 +81,169 @@
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
+
+
+
+
+
+
+
+                <div class="modal fade" id="sil" tabindex="-1" role="basic" aria-hidden="true"
+                     style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true"></button>
+                                <h4 class="modal-title">
+                                    <div class="caption">
+                                        <?php if ($b_k->b_k == "KASA") echo "<i class=\"fa fa-money font-green\"></i>"; else echo "<i class=\"fa fa-bank font-green\"></i>"; ?>
+                                        <span class="caption-subject font-green bold uppercase"><?php echo $b_k->ad; ?></span>
+                                    </div>
+
+                                    <?php if(($b_k->bakiye == 0 || $b_k->bakiye == "") && !$veri->veri): ?>
+                                        Bu kasa/banka kaydını silmek istediğinize emin misiniz?
+                                    <?php else: ?>
+                                        Kayıt silinemiyor
+                                    <?php endif; ?>
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <?php if(($b_k->bakiye == 0 || $b_k->bakiye == "") && !$veri->veri): ?>
+                                    <p> Silme işleminin sonucunda.</p>
+                                    <ul>
+                                        <li> Kayıt artık Kasa ve Bankalar listelerinde görünmeyecek.</li>
+                                        <li  class="font-red-thunderbird">  Silinen kayıt geri alınamaz ! </li>
+                                    </ul>
+
+                                <?php else: ?>
+                                        <p> Bu kasa/banka hesabı kaydı aşağıdaki sebepten ötürü silinemiyor. </p>
+
+                                    <?php if($b_k->bakiye > 0): ?>
+                                        <ul class="bg-red-thunderbird bg-font-red-thunderbird">
+                                            <li> Hesabın açık bakiyesi var. </li>
+                                        </ul>
+                                    <?php elseif($veri->veri): ?>
+                                        <ul class="bg-red-thunderbird bg-font-red-thunderbird">
+                                            <li> Hesab Haraketi var. </li>
+                                        </ul>
+                                    <?php endif; ?>
+
+                                <?php endif; ?>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn dark btn-outline" data-dismiss="modal">
+                                    VAZGEÇ
+                                </button>
+                                <?php if(($b_k->bakiye == 0 || $b_k->bakiye == "") && !$veri->veri): ?>
+                                    <button onclick="arsiveal(<?php echo $id; ?>)" type="button" class="btn green">SİL</button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
+
+
+
+
+
+
+<!--
+                <div class="modal fade" id="bakiye_sabitle" tabindex="-1" role="basic" aria-hidden="true"
+                     style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true"></button>
+                                <div class="modal-title">
+                                    <h4>
+                                    <div class="caption">
+                                        <?php // if ($b_k->b_k == "KASA") echo "<i class=\"fa fa-money font-green\"></i>"; else echo "<i class=\"fa fa-bank font-green\"></i>"; ?>
+                                        <span class="caption-subject font-green bold uppercase"><?php // echo $b_k->ad; ?></span>
+                                    </div>
+
+                                    <i class="fa fa-compress fa-1x"></i>   Bakiye Sabitle
+                                    </h4>
+                                <div class="caption">Hesabınızın herhangi bir tarihte gün sonu bakiyesi burada kayıtlı olandan farklı ise
+                                    düzeltebilir ve farkın neden kaynaklandığının açıklaması ile kaydedebilirsiniz.</div>
+                            </div>
+                            </div>
+
+                            <div class="modal-body">
+
+
+
+
+
+
+                                 <div class="form-group">
+                                     <label class="control-label col-md-4">AÇIKLAMA</label>
+                                     <div class="col-md-8 input-group" style="padding-left: 15px;">
+                                        <input type="text" value="" class="form-control input-medium" id="bakiye_sabitle_aciklama">
+                                     </div>
+                                 </div>
+
+
+                                 <div class="form-group">
+                                     <label class="control-label col-md-4">TARİHİ</label>
+                                     <div class="col-md-8 input-group" style="padding-left: 15px;">
+                                        <input type="text" value="<?php // echo date('d-m-Y') ?>" class="form-control input-medium datepicker" readonly id="bakiye_sabitle_tarih">
+                                     </div>
+                                 </div>
+
+
+                                 <div class="form-group">
+                                     <label class="control-label col-md-4">YENİ BAKİYE</label>
+
+                                     <div class="col-md-8 input-group input-medium " style="padding-left: 15px;">
+                                         <input type="text" data-type='currency' name="bakiye_sabitle_meblag" id="bakiye_sabitle_meblag"
+                                                value="" class="form-control" placeholder="0,00">
+                                         <div class="input-group-btn">
+                                             <button type="button" class="btn green" tabindex="-1" id="bakiye_sabitle_kasa_kur">
+                                                 <?php // if ($b_k->acilis_doviz == "TL"): ?>      <i class="fa fa-try"></i>
+                                                 <?php // elseif ($b_k->acilis_doviz == "USD"): ?> <i class="fa fa-usd"></i>
+                                                 <?php // elseif ($b_k->acilis_doviz == "EUR"): ?> <i class="fa fa-euro"></i>
+                                                 <?php // elseif ($b_k->acilis_doviz == "GBP"): ?> <i class="fa fa-gbp"></i>
+                                                 <?php // endif; ?>
+
+                                             </button>
+
+                                         </div>
+                                     </div>
+                                  </div>
+                                <hr>
+                                <div class="caption col-md-12">
+                                    <span class="bg-red-thunderbird bg-font-red-thunderbird"> Dikkat! </span>
+                                    Bakiye sabitleme işleminden sonra, ilgili tarih ve öncesine kaydedeceğiniz işlemler bakiyeyi etkilemeyecektir.
+                                </div>
+
+                            </div>
+
+
+                            <div class="modal-footer">
+
+
+                                <button type="button" class="btn dark btn-outline" data-dismiss="modal">
+                                    VAZGEÇ
+                                </button>
+
+                                    <button onclick="BakiyeSabitle(<?php echo $id; ?>)" type="button" class="btn green">BAKİYE SABİTLE</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+-->
+
+
 
 
                 <div class="col-md-8">
@@ -87,7 +258,7 @@
                                 <span class="caption-subject font-green bold uppercase"><?php echo $b_k->ad; ?></span>
 
                             </div>
-                            <div class="actions">
+                            <div class="actions"><!--
                                 <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
                                     <i class="icon-cloud-upload"></i>
                                 </a>
@@ -96,7 +267,7 @@
                                 </a>
                                 <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
                                     <i class="icon-trash"></i>
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                         <div class="portlet-body form">
@@ -125,7 +296,7 @@
                                         <td><?php echo $b_k->acilis_bakiye; ?></td>
                                     </tr>
 
-                                  <?php endif;  $veri = $cls->hesapharaketleri($id);
+                                  <?php endif;
                                     if ($veri->veri):
 
                                     foreach ($veri->veri as $haraketler):
@@ -134,20 +305,14 @@
                                     <tr>
 
                                         <td>
-                         <?php $bk = 0;
-                         if($haraketler->islem == "TRANSFER") {
-                             $bk = 1;
-                             echo "TRANSFER";
-                         }
-                         else if($haraketler->islem == "N_GIRIS"){
-                             $bk = 1;
-                                   echo "NAKİT GİRİŞ";
-                         }
-                         else if($haraketler->islem == "N_CIKIS"){
-                             $bk = 1;
-                                   echo "NAKİT ÇIKIŞ";
-                         }
-                         ?>
+
+                                            <?php
+                                            $bk = 0;
+                                            $islem =  $this->help("islemaciklamalar")->islemler($haraketler->islem);
+                                            $bk = $islem["key"];
+                                            echo $islem["value"];
+                                            ?>
+
                                         </td>
                                         <td><?php echo date_format(date_create($haraketler->tarih), "d-m-Y"); ?></td>
 
@@ -202,7 +367,7 @@
                 </div>
 
 
-                <div class="col-md-4">
+                <div class="col-md-4" style="padding-left: 0px;  padding-right: 5px;">
                     <div class="portlet light bordered">
                         <div class="portlet-title">
                             <div class="caption">
@@ -211,11 +376,11 @@
                             </div>
                             <div class="actions">
 
-                                <button type="button" class="btn purple-plum">Bakiye Sabitle</button>
+                              <!--  <button type="button"  data-toggle="modal" href="#bakiye_sabitle"  class="btn purple-plum"><i class="fa fa-compress"></i> Bakiye Sabitle</button> -->
 
-                                <button type="button"  data-toggle="modal" href="#basic" class="btn yellow-crusta">Hesabı Arşivle</button>
+                                <button type="button"  data-toggle="modal" href="#basic" class="btn yellow-crusta"><i class="icon-cloud-upload"></i> Hesabı Arşivle</button>
 
-                                <button type="button" class="btn red-sunglo"><i class="icon-trash"></i> Hesabı Sil
+                                <button type="button" data-toggle="modal" href="#sil"  class="btn red-sunglo"><i class="icon-trash"></i> Hesabı Sil
                                 </button>
 
 
@@ -301,7 +466,7 @@
                                             <label class="control-label col-md-4">TARİHİ</label>
 
                                             <div class="col-md-8 input-group" style="padding-left: 15px;">
-                                                <input type="text" id="transfer_trh" value="<?php echo date('d-m-Y') ?>"
+                                                <input style="z-index: 1 !important;" type="text" id="transfer_trh" value="<?php echo date('d-m-Y') ?>"
                                                        class="form-control input-medium datepicker" readonly
                                                        name="acilis_tarih">
 

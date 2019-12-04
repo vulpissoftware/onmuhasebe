@@ -210,6 +210,7 @@ class nakit extends controller
         }
         $data["id"] = $this->val->id;
         $data["cls"] = $this->Model("nakit/anasayfa");
+
         $this->View("muhasebe/nakit/head", $data);
         $this->View("muhasebe/nakit/banka_detay", $data);
         $this->View("muhasebe/nakit/footer");
@@ -495,6 +496,38 @@ class nakit extends controller
 
     function arsiveal(){
         echo $this->Model("nakit/anasayfa")->kasabankaarsiv($this->val->id);
+
+    }
+
+    function bakiyesabitle(){
+
+
+        $cls = $this->Model("nakit/anasayfa");
+
+
+        $cikankasabanka = $cls->b_k($this->val->id);
+        $anlikbakiye = $cikankasabanka->bakiye;
+
+
+
+
+        $cls->b_k_bakiye_update($this->val->mebla, $this->val->id);
+        $cls->b_k_bakiye_tarih_update(date_format(date_create($this->val->tarih), "Y-m-d"), $this->val->id);
+
+
+        $data["giris_b_k"] = $this->val->id;
+
+
+        $data["giris_hesap_son_miktar"] = $anlikbakiye;
+        $data["giris_miktar"] = $this->val->mebla;
+        $data["giris_doviz"] = $this->val->doviz;
+        $data["tarih"] = date_format(date_create($this->val->tarih), "Y-m-d");
+        $data["islem"] = "B_SABITLE";
+        $data["aciklama"] = $this->val->aciklama;
+
+
+        $id = $cls->kaydet("kasa_haraketleri", $data);
+        if(isset($id)) echo $id; else false;
 
     }
 }

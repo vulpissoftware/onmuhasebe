@@ -117,8 +117,13 @@ class anasayfa_sql extends load
 
     function digerb_k($id)
     {
-        return $this->db->get_results("select * from banka_kasa  where id != $id AND  WHERE arsiv = 0  ");
+        return $this->db->get_results("select * from banka_kasa  where id != $id AND  arsiv = 0  ");
 
+    }
+
+    function b_k_bakiye_tarih_update($tarih,$id){
+        $veri["bs_tarih"] = $tarih;
+        $this->update("banka_kasa", $veri, "id = $id");
     }
 
     function musteri($id)

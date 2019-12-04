@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="faa63536-e91e-4777-b2b5-551416be0827" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Helpers/islemaciklamalar.php" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Themes/assets/global/plugins/amcharts/amcharts/amcharts.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Themes/assets/global/plugins/amcharts/amcharts/funnel.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Themes/assets/global/plugins/amcharts/amcharts/gantt.js" afterDir="false" />
@@ -1414,6 +1415,7 @@
       <change afterPath="$PROJECT_DIR$/Themes/assets/global/plugins/amcharts/amstockcharts/themes/dark.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Themes/assets/global/plugins/amcharts/amstockcharts/themes/light.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Themes/assets/global/plugins/amcharts/amstockcharts/themes/patterns.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/nakit.php" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/nakit.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Model/nakit/anasayfa.php" beforeDir="false" afterPath="$PROJECT_DIR$/Model/nakit/anasayfa.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Themes/assets/muhasebe/js/kasa.js" beforeDir="false" afterPath="$PROJECT_DIR$/Themes/assets/muhasebe/js/kasa.js" afterDir="false" />
@@ -1441,6 +1443,7 @@
   <component name="ProjectId" id="1USkwSB4LxOpiMOOV03CPJZfoHf" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
   <component name="RunDashboard">
@@ -1459,6 +1462,18 @@
     <configuration />
   </component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="04.12.2019">
+      <created>1575446499964</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1575446499964</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="04.12.2019" />
+    <option name="LAST_COMMIT_MESSAGE" value="04.12.2019" />
   </component>
 </project>

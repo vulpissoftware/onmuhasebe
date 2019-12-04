@@ -452,25 +452,25 @@ $( document ).ready(function() {
 
 
 
-var mebla;
+    var mebla;
 
-function hesapla(x=0) {
-        if(yazacakyer) {
+    function hesapla(x=0) {
+            if(yazacakyer) {
 
-            mebla = $("#t_meblag").val();
+                mebla = $("#t_meblag").val();
 
-            mebla = mebla.replace(/\./g, '');
-            mebla = mebla.replace(',', '.');
+                mebla = mebla.replace(/\./g, '');
+                mebla = mebla.replace(',', '.');
 
 
-            if(x==0) mebla = (mebla * hkur);
-            else mebla = (mebla * x);
-            mebla = parseFloat(mebla).toFixed(2);
-            mebla = mebla.replace('.', ',');
-            yazacakyer.val(mebla);
-            formatCurrency(yazacakyer, "blur");
+                if(x==0) mebla = (mebla * hkur);
+                else mebla = (mebla * x);
+                mebla = parseFloat(mebla).toFixed(2);
+                mebla = mebla.replace('.', ',');
+                yazacakyer.val(mebla);
+                formatCurrency(yazacakyer, "blur");
+            }
         }
-    }
 
     function dghsbtryap(){
         var cikanmiktar  = $("#t_meblag").val();
@@ -478,10 +478,87 @@ function hesapla(x=0) {
         var aciklama = $("#trfaciklama").val();
         var transfer_trh = $("#transfer_trh").val();
 
-        $.post( ANASAYFA+"/nakit/transefer",{cikis_b_k : cikis_b_k,giris_b_k : digerhesapid, cikan_miktar : cikanmiktar,cikis_doviz : cikiskur ,giris_miktar : yazacakyer.val(), giris_doviz : giriskur, transfer_trh : transfer_trh })
-            .done(function( data ) { console.log(data);  });
+        if(yazacakyer){
+            var g_miktar = yazacakyer.val();
+        }
+        else{
+            var g_miktar = cikanmiktar;
+        }
 
 
+        $.post( ANASAYFA+"/nakit/transefer",{cikis_b_k : cikis_b_k,giris_b_k : digerhesapid, cikan_miktar : cikanmiktar,cikis_doviz : cikiskur ,giris_miktar : g_miktar, giris_doviz : giriskur, transfer_trh : transfer_trh,aciklama :aciklama })
+            .done(function( data ) {
+location.replace(ANASAYFA +"/nakit/bk_detay/id/"+cikis_b_k);
+
+
+            });
+
+
+
+    }
+    function paragirisiekle(){
+        var cikis_b_k =  $("#cikan_kasa_id").val();
+        var giris_miktar = $("[name='pge_meblag']").val();
+        var aciklama = $("[name='pge_aciklama']").val();
+        var pge_tarih = $("[name='pge_tarih']").val();
+
+
+        $.post( ANASAYFA+"/nakit/paragirisi",{b_k_id : cikis_b_k,giris_miktar : giris_miktar,aciklama :aciklama ,transfer_trh : pge_tarih,giris_doviz : sayfakur})
+            .done(function( data ) {
+               location.replace(ANASAYFA +"/nakit/bk_detay/id/"+cikis_b_k);
+
+
+            });
+
+    }
+
+    function paracikisiekle(){
+        var cikis_b_k =  $("#cikan_kasa_id").val();
+        var miktar = $("[name='pce_meblag']").val();
+        var aciklama = $("[name='pce_aciklama']").val();
+        var tarih = $("[name='pce_tarih']").val();
+
+
+        $.post( ANASAYFA+"/nakit/paracikisi",{b_k_id : cikis_b_k, miktar : miktar,aciklama :aciklama ,tarih : tarih, doviz : sayfakur})
+            .done(function( data ) {
+                 location.replace(ANASAYFA +"/nakit/bk_detay/id/"+cikis_b_k);
+
+
+            });
+
+    }
+
+    function arsiveal(id) {
+
+        $.post( ANASAYFA+"/nakit/arsiveal",{id : id})
+            .done(function( data ) {
+                if(data==id){
+                    alert("BANKA/KASA ARŞİV İŞLEMİ BAŞARILI.");
+                    location.replace(ANASAYFA +"/nakit/kasa_banka");
+                }
+                else{
+                    alert("BANKA/KASA ARŞİV İŞLEMİ BAŞARISIZ. ! ");
+                }
+
+            });
+
+    }
+
+
+    function BakiyeSabitle(id) {
+         var aciklama = $("#bakiye_sabitle_aciklama").val();
+         var tarih =  $("#bakiye_sabitle_tarih").val();
+         var mebla = $("#bakiye_sabitle_meblag").val();
+        $.post( ANASAYFA+"/nakit/bakiyesabitle",{id : id,aciklama : aciklama, tarih:tarih,bakiye:mebla, doviz : sayfakur}).done(function( data ) {
+            if(1 <= data){
+                alert("BANKA/KASA BAKİYE SABİTLEME İŞLEMİ BAŞARILI.");
+                location.replace(ANASAYFA +"/nakit/kasa_banka");
+            }
+            else{
+                alert("İŞLEM BAŞARISIZ ! ");
+            }
+
+        });
 
     }
 
