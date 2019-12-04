@@ -16,11 +16,124 @@
                     </div>
                 </div>
             </div>
-
             <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <?php echo $musteri->adi; ?>
+                <div class="row" id="hata" style="display: none;">
+                    <div class="col-sm-2"></div>
+                    <div class="col-md-4">
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                            <strong>Hata ! </strong><span id="hata_ic"></span>
+                        </div>
+                    </div>
                 </div>
+                <br />
+                <form class="form-horizontal" id="yenimaas_form" action="<?php SELF::go("calisan/yeni_maas_ekle"); ?>" method="post">
+                    <input type="hidden" value="<?php echo $musteri->id; ?>" name="calisan" />
+                <div class="portlet-content">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">ÇALIŞAN</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control"  value="<?php echo $musteri->adi; ?>" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">AÇIKLAMA</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="aciklama" maxlength="200" />
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">HAKEDİŞ TARİHİ</label>
+                            <div class="col-md-6">
+                                <div class="input-group date date-picker input-medium" data-date-format="dd-mm-yyyy">
+                                    <input type="text" value="<?php echo date('d-m-Y') ?>" class="form-control" name="hak_edis_tarihi" readonly required="required">
+                                    <span class="input-group-btn">
+                                        <button class="btn default" type="button">
+                                            <i class="icon-calendar"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">TOPLAM TUTAR</label>
+                            <div class="col-md-6">
+                                <div class="input-group input-medium">
+                                    <input type="text" data-type='currency' value="" class="form-control" name="miktar" placeholder="1.000" required="required">
+                                    <input type="hidden" id="fiyatkur" name="doviz" value="TL">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn green" tabindex="-1" id="kurbtn"><i class="fa fa-try"></i></button>
+                                        <button type="button" class="btn green dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false">
+                                            <i class="fa fa-angle-down"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="javascript:pb('TL')"><i class="fa fa-try"></i> Türk Lirası</a></li>
+                                            <li><a href="javascript:pb('USD')"><i class="fa fa-usd"></i> Dolar</a></li>
+                                            <li><a href="javascript:pb('EUR')"><i class="fa fa-eur"></i> Euro</a></li>
+                                            <li><a href="javascript:pb('GBP')"><i class="fa fa-gbp"></i> İngiliz Sterlini</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">ÖDEME DURUMU</label>
+                            <div class="col-md-6">
+                                <div class="mt-radio-inline">
+                                    <label class="mt-radio">
+                                        <input type="radio" name="odeme_durum" value="0" checked> Ödenecek
+                                        <span></span>
+                                    </label>
+                                    <label class="mt-radio">
+                                        <input type="radio" name="odeme_durum" value="1"> Ödendi
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="odenecek">
+                            <label class="col-md-2 control-label">ÖDENECEĞİ TARİH</label>
+                            <div class="col-md-6">
+                                <div class="input-group date date-picker input-medium" data-date-format="dd-mm-yyyy">
+                                    <input type="text" value="<?php echo date('d-m-Y') ?>" name="odenecegi_tarih" class="form-control" readonly required="required">
+                                    <span class="input-group-btn">
+                                        <button class="btn default" type="button">
+                                            <i class="icon-calendar"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="odendi" style="display: none;">
+                            <label class="col-md-2 control-label">ÖDENDİĞİ TARİH ve HESAP</label>
+                            <div class="col-md-6">
+                                <div class="col-md-4" style="padding: 0px;">
+                                    <div class="input-group date date-picker input-medium" data-date-format="dd-mm-yyyy">
+                                        <input type="text" value="<?php echo date('d-m-Y') ?>" class="form-control" name="odendigi_tarih" readonly required="required">
+                                        <span class="input-group-btn">
+                                            <button class="btn default" type="button">
+                                                <i class="icon-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control input-medium" name="kasa" >
+                                        <?php foreach ($cls->kasalar() as $kasa) { ?>
+                                            <option value="<?php echo $kasa->id; ?>"><?php echo $kasa->ad; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                    <hr />
+                <div class="portlet-footer0" style="padding-left: 140px;">
+                        <button type="button" onclick="window.history.go(-1); return false;"class="btn btn-outline dark" style="margin-right: 15px;">Vazgeç</button>
+                        <button type="submit" class="btn green">Kaydet</button>
+                </div>
+                </form>
             </div>
         </div>
 
@@ -28,4 +141,5 @@
 <script>
     var ANASAYFA = '<?php echo SITE; ?>';
 </script>
+<script src="<?php echo SKIN; ?>assets/muhasebe/js/calisan.js" type="text/javascript"></script>
 </div>
