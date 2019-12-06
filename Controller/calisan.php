@@ -100,8 +100,7 @@ class calisan extends controller
         $veri["tc"] = $this->val->tc;
         $veri["iban"] = $this->val->iban;
         $veri["kategori"] = $this->val->kategori;
-        $veri["bakiye"] = 0;
-        $veri["genel_toplam"] = 0;
+        $veri["bakiye"] = "0";
 
         $id = $data["cls"]->kaydet("calisan", $veri);
         if ($id >= 1) {
@@ -171,13 +170,83 @@ class calisan extends controller
         $data["cls"] = $this->Model("calisan/anasayfa");
         $veri = ARRAY();
 
+        $id=$this->val->calisan;
         $veri["calisan"] = $this->val->calisan;
+        $veri["maas_id"] = $this->val->maas;
+        $veri["tarih"] = date_format(date_create($this->val->tarih), "Y-m-d");
         $veri["kasa"] = $this->val->kasa;
         $veri["miktar"] = $this->val->miktar;
-        $veri["maas_id"] = $this->val->maas;
         $veri["aciklama"] = $this->val->aciklama;
-        $veri["tarih"] = $this->val->tarih;
-        $id=$this->val->calisan;
+        $veri["islem_id"] = $this->val->maas;
+        if($this->val->maas == 0)
+            $veri["islem"] = "c_avans";
+        else
+            $veri["islem"] = "c_odeme";
+        $calisan=$data["cls"]->calisan($id);
+        $toplam=str_replace(".", "", $calisan->bakiye);
+        $toplam=str_replace(",", ".", $toplam);
+        $odenen=str_replace(".", "", $veri['miktar']);
+        $odenen=str_replace(",", ".", $odenen);
+        $toplam=$toplam-$odenen;
+        $maas_cek=$data["cls"]->maas_cek($this->val->maas);
+        if($maas_cek){
+            $maas=str_replace(".", "", $maas_cek->bakiye);
+            $maas=str_replace(",", ".", $maas);
+            if($maas > $odenen){
+                $maas_son=$maas-$odenen;
+                $maas_son=number_format($maas_son, 2, ",", ".");
+                $veri1["bakiye"] = $maas_son;
+                $data["cls"]->maasupdate($veri["maas_id"], $veri1);
+            }
+            else if($maas == $odenen){
+                $maas_son=0;
+                $maas_son=number_format($maas_son, 2, ",", ".");
+                $veri1["bakiye"] = $maas_son;
+                $veri1["odeme_durumu"] = 1;
+                $data["cls"]->maasupdate($veri["maas_id"], $veri1);
+            }
+            else{
+                $maas_son=0;
+                $maas_son=number_format($maas_son, 2, ",", ".");
+                $veri1["bakiye"] = $maas_son;
+                $veri1["odeme_durumu"] = 1;
+                $data["cls"]->maasupdate($veri["maas_id"], $veri1);
+                $odenen=$odenen-$maas;
+                $ay_maaslar=$data["cls"]->ay_maaslar($veri["calisan"], $veri["maas_id"]);
+                if($ay_maaslar){
+                    foreach ($ay_maaslar as $ay_maas) {
+                        $maas=str_replace(".", "", $ay_maas->bakiye);
+                        $maas=str_replace(",", ".", $maas);
+                        if($maas > $odenen){
+                            $maas_son=$maas-$odenen;
+                            $maas_son=number_format($maas_son, 2, ",", ".");
+                            $veri1["bakiye"] = $maas_son;
+                            $veri1["odeme_durumu"] = 0;
+                            $data["cls"]->maasupdate($ay_maas->id, $veri1);
+                            break;
+                        }
+                        else if($maas == $odenen){
+                            $maas_son=0;
+                            $maas_son=number_format($maas_son, 2, ",", ".");
+                            $veri1["bakiye"] = $maas_son;
+                            $veri1["odeme_durumu"] = 1;
+                            $data["cls"]->maasupdate($ay_maas->id, $veri1);
+                            break;
+                        }
+                        else{
+                            $maas_son=0;
+                            $maas_son=number_format($maas_son, 2, ",", ".");
+                            $veri1["bakiye"] = $maas_son;
+                            $veri1["odeme_durumu"] = 1;
+                            $data["cls"]->maasupdate($ay_maas->id, $veri1);
+                            $odenen=$odenen-$maas;
+                        }
+                    }
+                }
+            }
+        }
+        $veri2["bakiye"]=number_format($toplam, 2, ",", ".");
+        $data["cls"]->calisanupdate($id, $veri2);
         $data["cls"]->kaydet("calisan_hareketler", $veri);
         $this->RedirectUrl("calisan/calisan_detay/id/$id/kayit/avans");
 
@@ -190,20 +259,35 @@ class calisan extends controller
         $veri["calisan"] = $this->val->calisan;
         $veri["hak_edis_tarihi"] = date_format(date_create($this->val->hak_edis_tarihi), "Y-m-d");
         $veri["miktar"] = $this->val->miktar;
+        $veri["bakiye"] = $this->val->miktar;
         $veri["odeme_durumu"] = $this->val->odeme_durum;
-        $veri["kasa"] =  $this->val->kasa;
         $veri["aciklama"] = $this->val->aciklama;
-        $veri["doviz"] = $this->val->doviz;
         $veri["etiketler"] =  "0";
         $veri["kategori"] =  0;
-
-        if($veri["odeme_durumu"] == 0)
-            $veri["tarih"]=date_format(date_create($this->val->odenecegi_tarih), "Y-m-d");
-        else
-            $veri["tarih"]=date_format(date_create($this->val->odenecegi_tarih), "Y-m-d");
+        $veri["tarih"] = date("Y-m-d");
+        if($veri["odeme_durumu"] == 0) {
+            $veri["odenecek_tarih"] = date_format(date_create($this->val->odenecegi_tarih), "Y-m-d");
+            $veri["kasa"] =  0;
+        }
+        else {
+            $veri["odenecek_tarih"] = date_format(date_create($this->val->odendigi_tarih), "Y-m-d");
+            $veri["kasa"] =  $this->val->kasa;
+        }
 
         $id=$this->val->calisan;
-        $data["cls"]->kaydet("calisan_maas", $veri);
+        $id2=$data["cls"]->kaydet("calisan_maas", $veri);
+
+        $veri2["calisan"] = $this->val->calisan;
+        $veri2["kasa"] = 0;
+        $veri2["miktar"] = $this->val->miktar;
+        $veri2["maas_id"] = $id2;
+        $veri2["islem"] = $this->val->islem;
+        $veri2["islem_id"] = $this->val->islemid;
+        $veri2["aciklama"] = "Çalışana Maaş Oluşturuldu.";
+        $veri2["tarih"] = date("Y-m-d");
+
+        $data["cls"]->kaydet("calisan_hareketler", $veri2);
+
         $this->RedirectUrl("calisan/calisan_detay/id/$id/kayit/maas");
     }
 }

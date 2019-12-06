@@ -29,6 +29,8 @@
                 <br />
                 <form class="form-horizontal" id="yenimaas_form" action="<?php SELF::go("calisan/yeni_maas_ekle"); ?>" method="post">
                     <input type="hidden" value="<?php echo $musteri->id; ?>" name="calisan" />
+                    <input type="hidden" value="c_maas" name="islem" />
+                    <input type="hidden" value="<?php echo $musteri->id; ?>" name="islemid" />
                 <div class="portlet-content">
                     <div class="form-group">
                         <label class="col-md-2 control-label">ÇALIŞAN</label>
@@ -60,18 +62,8 @@
                             <div class="col-md-6">
                                 <div class="input-group input-medium">
                                     <input type="text" data-type='currency' value="" class="form-control" name="miktar" placeholder="1.000" required="required">
-                                    <input type="hidden" id="fiyatkur" name="doviz" value="TL">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn green" tabindex="-1" id="kurbtn"><i class="fa fa-try"></i></button>
-                                        <button type="button" class="btn green dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false">
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="javascript:pb('TL')"><i class="fa fa-try"></i> Türk Lirası</a></li>
-                                            <li><a href="javascript:pb('USD')"><i class="fa fa-usd"></i> Dolar</a></li>
-                                            <li><a href="javascript:pb('EUR')"><i class="fa fa-eur"></i> Euro</a></li>
-                                            <li><a href="javascript:pb('GBP')"><i class="fa fa-gbp"></i> İngiliz Sterlini</a></li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>

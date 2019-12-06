@@ -1,29 +1,38 @@
-$('input[name=odeme_durum]').on('change', function() {
-    var id=$('input[name=odeme_durum]:checked').val();
-    if(id == 1){
-        $('#odenecek').css({"display": "none"});
-        $('#odendi').css({"display": "block"});
+  function pb(p){
+        // para birimi
+        
+        if(p=='TL'){
+            $("#kurbtn").html('<i class="fa fa-try"></i>');
+            $("#fiyatkur").val('TL'); 
+        }
+        else if(p=='USD'){
+             $("#kurbtn").html('<i class="fa fa-usd"></i>');
+             $("#fiyatkur").val('USD'); 
+        }
+        else if(p=='EUR'){
+             $("#kurbtn").html('<i class="fa fa-eur"></i>');
+             $("#fiyatkur").val('EUR'); 
+        }
+        else if(p=='GBP'){
+             $("#kurbtn").html('<i class="fa fa-gbp"></i>');
+             $("#fiyatkur").val('GBP'); 
+        }
     }
-    else{
-        $('#odenecek').css({"display": "block"});
-        $('#odendi').css({"display": "none"});
-    }
-});
-$('#yenimaas_form').on('submit', function (e) {
-    var miktar = $('input[name=miktar]').val();
-    if(miktar == " " || miktar == "" || miktar == "0" || miktar == "0,00"){
-        $('#hata').css({"display": "block"});
-        $('#hata_ic').html("'TOPLAM TUTAR' hatalı lütfen düzeltiniz.");
-        return false;
-    }
-    else{
-        return true;
-    }
-});
-    
+
+
+
+
+
+
+
+
+
+
+
+
 // Jquery Dependency
 $(window).load(function(){
-    
+     
     $("input[data-type='currency']").on({
     keyup: function() {
       
@@ -108,45 +117,4 @@ function formatCurrency(input, blur) {
   var updated_len = input_val.length;
   caret_pos = updated_len - original_len + caret_pos;
   input[0].setSelectionRange(caret_pos, caret_pos);
-}
-function sil(id) {
-    var x = confirm("Silmek istiyormusunuz ? ");
-    if (x == true) {
-        $.post("<?php echo SITE; ?>/ajaxislemler/calisansil", {id: id})
-            .done(function (data) {
-                if (data == id) {
-                    location.replace("<?php SELF::go('calisan/calisan_listesi'); ?>");
-                } else {
-                    alert("Silme işleminde sorun oluştu");
-                }
-            });
-    } else {
-        alert("Silme işleminden vazgeçtiniz");
-    }
-}
-function pb(p){
-    if(p=='TL'){
-        $("#kurbtn").html('<i class="fa fa-try"></i>');
-        $("#fiyatkur").val('TL');
-    }
-    else if(p=='USD'){
-        $("#kurbtn").html('<i class="fa fa-usd"></i>');
-        $("#fiyatkur").val('USD');
-    }
-    else if(p=='EUR'){
-        $("#kurbtn").html('<i class="fa fa-eur"></i>');
-        $("#fiyatkur").val('EUR');
-    }
-    else if(p=='GBP'){
-        $("#kurbtn").html('<i class="fa fa-gbp"></i>');
-        $("#fiyatkur").val('GBP');
-    }
-}
-function ac(){
-    $('.odeme').show();
-    $('.btnnn').hide();
-}
-function kb(){
-    $('.odeme').hide();
-    $('.btnnn').show();
 }
