@@ -30,7 +30,7 @@ class tajax extends controller{
                 parent::__construct($run);
         }
 
-    } 
+    }
     function isMobileDevice(){
         $aMobileUA = array(
             '/iphone/i' => 'iPhone',

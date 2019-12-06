@@ -27,5 +27,5 @@ class ikonlar_help
         endif;
         return $deger;
     }
-}
+} 
    
