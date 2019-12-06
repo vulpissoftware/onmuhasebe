@@ -101,7 +101,6 @@
                                             <th class=""> Bakiye</th>
                                             <th class=""> Doviz Cinsi</th>
 
-                                            <th class=""> İşlemler</th>
                                         </tr>
                                         </thead>
                                         <tbody id="sayfa">
@@ -150,28 +149,7 @@
                                                         <span>  <?php echo $banka_kasa->acilis_doviz; ?>  </span>
                                                     </td>
 
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <button class="btn btn-xs green dropdown-toggle"
-                                                                    type="button" data-toggle="dropdown"
-                                                                    aria-expanded="false"> İşlem
-                                                                <i class="fa fa-angle-down"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu" role="menu">
-                                                                <li>
-                                                                    <a href="<?php SELF::go('musteri/guncelle/id/' . $banka_kasa->id); ?>">
-                                                                        <i class="icon-docs"></i> Güncelle </a>
-                                                                </li>
 
-                                                                <li>
-                                                                    <a href="javascript:sil('<?php echo $banka_kasa->id; ?>')">
-                                                                        <i class="icon-ban"></i> Sil </a>
-                                                                </li>
-
-
-                                                            </ul>
-                                                        </div>
-                                                    </td>
                                                 </tr>
 
 
@@ -182,43 +160,6 @@
 
                                         </tbody>
                                     </table>
-                                </div>
-
-                                <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true"
-                                     style="display: none;">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-hidden="true"></button>
-                                                <h4 class="modal-title">Bu hizmet/ürün kaydını arşivlemek istediğinize
-                                                    emin misiniz?</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p> Arşivleme işleminin sonucunda:</p>
-                                                <ul>
-                                                    <li> Kayıt artık Hizmet ve Ürünler listelerinde görünmeyecek.
-                                                    </li>
-                                                    <li> Bu hizmet/ürün kaydını içeren faturalar etkilenmeyecek
-                                                    </li>
-                                                    <li> Eğer bu hizmet/ürün kaydı bir tekrarlama şablonunda
-                                                        kullanılıyorsa,
-                                                        şablon fatura haline geldiğinde hizmet/ürün kaydı arşivden
-                                                        çıkarılacak.
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn dark btn-outline" data-dismiss="modal">
-                                                    VAZGEÇ
-                                                </button>
-                                                <button onclick="arsiveal()" type="button" class="btn green">ARŞİVLE
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <!-- /.modal-content -->
-                                    </div>
-                                    <!-- /.modal-dialog -->
                                 </div>
 
 
@@ -277,10 +218,7 @@
 
             var uid = "";
 
-            function arsivid(id) {
-                uid = id;
 
-            }
 
             function ekleb() {
                 location.replace('<?php SELF::go('nakit/banka_ekle'); ?>');
@@ -303,7 +241,7 @@
                     suankisayfa = d;
                 }
 
-                $.post("<?php echo SITE; ?>/ajaxislemler/musterisayfalama", {sayfa: suankisayfa})
+                $.post("<?php echo SITE; ?>/ajaxislemler/bankakasalist", {sayfa: suankisayfa})
                     .done(function (data) {
 
                         $("#sayfa").html(data);
@@ -320,43 +258,5 @@
             }
 
 
-            function sil(id) {
-                id = id.trim();
-                var x = confirm("Silmek istiyormusunuz ? ");
-                if (x == true) {
 
-                    $.post("<?php echo SITE; ?>/ajaxislemler/musterisil", {id: id})
-                        .done(function (data) {
-                            var c = data.trim();
-                            if (c == id) {
-
-                                $(".sil_" + id).hide("slow");
-
-                            } else {
-                                alert("Silme işleminde sorun oluştu");
-                            }
-                        });
-                    // silme işlemini yap
-                } else {
-                    alert("Silme işleminden vazgeçtiniz");
-                }
-
-            }
-
-
-            function arsiveal() {
-                uid = uid.trim();
-                $('#basic').modal('toggle');
-                $.post("<?php echo SITE; ?>/ajaxislemler/hizmeturunarsiv", {id: uid})
-                    .done(function (data) {
-                        var ff = data.trim();
-                        if (ff == uid) {
-                            $(".sil_" + uid).hide("slow");
-
-                        } else {
-                            alert("işlemin Sırasında sorun oluştu");
-                        }
-                    });
-
-            }
         </script>

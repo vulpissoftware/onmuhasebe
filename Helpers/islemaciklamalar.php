@@ -59,6 +59,10 @@ class islemaciklamalar_help
             $data["value"] =  "FATURA ÖDEME";
         }
 
+        else if($islem == "F_TAHSILAT"){
+            $data["key"] = 2;
+            $data["value"] =  "FATURA TAHSİLAT";
+        }
 
 
 

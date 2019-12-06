@@ -30,7 +30,7 @@
                         <div class="portlet-title">
                             <div class="caption font-dark">
                                 <i class="icon-settings font-dark"></i>
-                                <span class="caption-subject bold uppercase">Hizmet ve ürünler</span>
+                                <span class="caption-subject bold uppercase">İrsaliyeler</span>
                             </div>
 
 
@@ -82,100 +82,46 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-scrollable">
+                                <div class="table responsive">
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column dataTable no-footer"
                                            id="sample_1" role="grid" aria-describedby="sample_1_info">
                                         <thead>
                                         <tr role="row">
-                                            <th class="">
-                                                Sıra No
-                                            </th>
-                                            <th class=""> Ürün Adı</th>
-                                            <th class=""> Stok Miktarı</th>
-                                            <th class=""> Alış (Vergiler hariç)</th>
-                                            <th class=""> Satış (Vergiler Hariç)</th>
-                                            <th class=""> İşlemler
 
-                                            </th>
+                                            <th class=""> AÇIKLAMA </th>
+                                            <th class=""> İRSALİYE TİPİ </th>
+                                            <th class=""> DÜZENLEME TARİHİ </th>
+
                                         </tr>
                                         </thead>
                                         <tbody id="sayfa">
 
                                         <?php
-                                        $veri = $cls->urunler();
-                                        $i = 0;
-                                        foreach ($veri->veri as $urunler): $i++;
+                                        $veri = $cls->irsaliyeler();
+                                        if($veri->veri):
+
+                                        foreach ($veri->veri as $irsaliyeler):  ;
                                             ?>
-                                            <tr class="gradeX odd sil_<?php echo $urunler->id; ?>" role="row">
+                                            <tr class="gradeX odd " role="row">
                                                 <td>
                                                     <label>
 
-                                                        <span><?php echo $i; ?></span>
+                                                        <span><?php echo $irsaliyeler->aciklama; ?></span>
                                                     </label>
                                                 </td>
-                                                <td class="sorting_1"><a
-                                                            href="<?php SELF::go('stok/hizmet_urun_detay/id/' . $urunler->id) ?>"><?php echo $urunler->ad; ?> </a>
-                                                </td>
-                                                <td>
 
-                                                    <?php if ($urunler->stok_takibi == 1 && ($urunler->stok_miktar <= $urunler->stok_seviyesi)) {
-                                                        ?>
-                                                        <span class="label label-sm label-danger">  <?php echo $urunler->stok_miktar . " " . $urunler->alis_satis_birimi; ?>  </span>
-                                                    <?php } else { ?>
-                                                        <span class="label label-sm label-success">  <?php echo $urunler->stok_miktar . " " . $urunler->alis_satis_birimi; ?>  </span>
-                                                    <?php } ?>
-                                                </td>
-                                                <td>
-                                                    <span>  <?php echo $urunler->v_h_a_f . $urunler->v_h_a_f_kur; ?>  </span>
-                                                </td>
-                                                <td class="center"> <?php echo $urunler->v_h_s_f . $urunler->v_h_s_f_kur; ?> </td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <button class="btn btn-xs green dropdown-toggle" type="button"
-                                                                data-toggle="dropdown" aria-expanded="false"> İşlem
-                                                            <i class="fa fa-angle-down"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu" role="menu">
-                                                            <li>
-                                                                <a href="<?php SELF::go('stok/hizmet_urun_guncelle/id/' . $urunler->id); ?>">
-                                                                    <i class="icon-docs"></i> Güncelle </a>
-                                                            </li>
+                                                <td class="center"><?php if($irsaliyeler->tipi == "GIDEN") {echo "Giden İrsaliye"; } else { echo "Gelen İrsaliye"; } ?> </td>
 
-                                                            <li>
-                                                                <a href="javascript:sil('<?php echo $urunler->id; ?>')">
-                                                                    <i class="icon-ban"></i> Sil </a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="<?php SELF::go('stok/hizmet_urun_kopya/id/' . $urunler->id); ?>">
-                                                                    <i class="icon-docs"></i> Kopya Oluştur </a>
-                                                            </li>
-                                                            <!--    <li class="divider"> </li>-->
-                                                            <li>
-                                                                <a data-toggle="modal" href="#basic"
-                                                                   onclick="arsivid('<?php echo $urunler->id; ?>');">
-                                                                    <i class="fa fa-archive"></i> Arşivle
-                                                                    <!-- <span class="badge badge-success">4</span>-->
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
                                             </tr>
 
 
-                                        <?php endforeach; ?>
+                                        <?php endforeach; endif;?>
 
 
                                         </tbody>
                                     </table>
 
 
-                                    <div class="col-md-3">
-                                        <input class="form-control form-control-inline input-medium date-picker"
-                                               size="16" type="text" value="">
-                                        <span class="help-block"> Select date </span>
-                                    </div>
                                 </div>
 
                                 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true"

@@ -19,7 +19,7 @@
 
                         <span class="caption-subject font-green-haze bold uppercase"><a
                                     href="<?php SELF::go('stok/hizmet_urun'); ?>">İrsaliyeler -> </a></span>
-                        <span>Yeni Giden İrsaliye</span>
+                        <span>Yeni Gelen İrsaliye</span>
                     </div>
 
                     <div class="row">

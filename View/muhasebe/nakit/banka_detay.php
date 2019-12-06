@@ -137,7 +137,7 @@ $veri = $cls->hesapharaketleri($id);
                                     VAZGEÇ
                                 </button>
                                 <?php if(($b_k->bakiye == 0 || $b_k->bakiye == "") && !$veri->veri): ?>
-                                    <button onclick="arsiveal(<?php echo $id; ?>)" type="button" class="btn green">SİL</button>
+                                    <button onclick="sil(<?php echo $id; ?>)" type="button" class="btn green">SİL</button>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -285,7 +285,7 @@ $veri = $cls->hesapharaketleri($id);
                                         <th scope="col">Bakiye</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="sayfa">
                                     <?php if($b_k->acilis_bakiye): ?>
                                     <tr>
                                         <td><?php echo "AÇILIŞ BAKİYESİ" ?></td>
@@ -352,11 +352,57 @@ $veri = $cls->hesapharaketleri($id);
                                             ?></td> </tr>
 
                                 <?php  endforeach;  endif; ?>
-                                    <tr><td colspan="5"></td><td colspan="1"><h5><?php if($b_k->bakiye) echo  $b_k->bakiye  ." " .$b_k->acilis_doviz; ?></h5></td></tr>
-                                      </tbody>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr><td colspan="4"></td><td> BAKİYE </td><td colspan="1"><?php if($b_k->bakiye) echo  $b_k->bakiye  ." " .$b_k->acilis_doviz; ?></td></tr>
+                                    </tfoot>
+
+
+
+
+
                                 </table>
 
 
+                                <div class="row">
+
+                                    <div class="col-md-12 col-sm-12">
+                                        <!--
+                                        // sayfalamada kullanılacak js ve css yuklmesi
+
+                                        -->
+                                        <link rel="stylesheet"
+                                              href="<?php echo SKIN; ?>assets/pagination/css/style.css">
+                                        <script src="<?php echo SKIN; ?>assets/pagination/js/index.js"></script>
+                                        <div class="block-pagination" style="text-align: center">
+
+                                            <div class="clear"></div>
+
+                                            <?php if ($veri->toplam >= 1): ?>
+                                                <ul class="pagination">
+                                                    <div class="pagination content_detail__pagination cdp" actpage="1">
+                                                        <a href="#!-1" onclick="sirala('e');" class="cdp_i">prev</a>
+                                                        <?php for ($i = 1; $i <= $veri->sayfa; $i++) { ?>
+
+                                                            <a href="#!<?php echo $i; ?>"
+                                                               onclick="sirala(<?php echo $i; ?>);"
+                                                               class="cdp_i"><?php echo $i; ?></a>
+
+                                                        <?php } ?>
+
+                                                        <a href="#!+1" onclick="sirala('a');" class="cdp_i">next</a>
+
+
+                                                    </div>
+
+
+                                                </ul>
+                                            <?php endif; ?>
+
+                                        </div>
+
+                                    </div>
+                                </div>
 
 
 
@@ -960,7 +1006,34 @@ $veri = $cls->hesapharaketleri($id);
         </div>
 
         <script src="<?php echo SKIN; ?>assets/muhasebe/js/kasa.js" type="text/javascript"></script>
-        <script>kurcek();</script>
+        <script>
+            kurcek();
+
+            var suankisayfa = 1;
+
+
+            function sirala(d) {
+                var id = '<?php echo $id; ?> ';
+
+                if (d == "a") {
+                    suankisayfa += 1;
+                }
+                if (d == "e") {
+                    suankisayfa -= 1;
+                } else {
+                    suankisayfa = d;
+                }
+
+                $.post("<?php echo SITE; ?>/ajaxislemler/bkharaketlist", {sayfa: suankisayfa,id:id})
+                    .done(function (data) {
+
+                        $("#sayfa").html(data);
+
+                    });
+
+
+            }
+        </script>
 
     </div>
 

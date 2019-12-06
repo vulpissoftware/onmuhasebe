@@ -530,5 +530,10 @@ class nakit extends controller
         if(isset($id)) echo $id; else false;
 
     }
+
+    function bksil(){
+        echo $this->Model("nakit/anasayfa")->kasabankasil($this->val->id);
+
+    }
 }
 

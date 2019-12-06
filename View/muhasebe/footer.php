@@ -94,6 +94,14 @@
 <script src="<?php echo SKIN; ?>assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
 <script src="<?php echo SKIN; ?>assets/layouts/global/scripts/quick-nav.min.js" type="text/javascript"></script>
 <!-- END THEME LAYOUT SCRIPTS -->
+<script>
+    window.onload=function(){
+
+        history.pushState(window.location.pathname,null, '<?php echo SITE; ?>/vulpis');
+
+    }
+</script>
+</body>
 </body>
 
 </html>

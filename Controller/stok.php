@@ -170,7 +170,14 @@ class stok extends controller
         $this->View("muhasebe/stok/yeni_giden_irsaliye", $data);
         $this->View("muhasebe/stok/footer");
     }
+    function yeni_gelen_irsaliye_ekle()
+    {
 
+        $data["cls"] = $this->Model("genel/anasayfa");
+        $this->View("muhasebe/stok/head", $data);
+        $this->View("muhasebe/stok/yeni_gelen_irsaliye", $data);
+        $this->View("muhasebe/stok/footer");
+    }
 
     // FİYAT LİSTESİ
 

@@ -16,6 +16,12 @@ class anasayfa_sql extends load
         parent::__construct();
         $this->data = new stdClass;
     }
+
+    function kasabankasil($id){
+        $this->db->query("DELETE FROM banka_kasa WHERE id = $id");
+        return $id;
+    }
+
     function kasabankaarsiv($id){
         $data["arsiv"] = 1;
         $this->update("banka_kasa",$data,"id = $id");

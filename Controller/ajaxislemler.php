@@ -280,6 +280,118 @@ class ajaxislemler extends controller
         endforeach;
     }
 
+    function bkharaketlist(){
+        $id = intval($this->val->id);
+        $cls = $this->Model("nakit/anasayfa");
+        $b_k = $cls->b_k($id);
+
+
+        $i = ($this->val->sayfa - 1) * SAYFALAMA_ADET;
+        $veri = $cls->hesapharaketleri($id,$this->val->sayfa);
+
+        if($b_k->acilis_bakiye): ?>
+            <tr>
+                <td><?php echo "AÇILIŞ BAKİYESİ" ?></td>
+                <td><?php echo date_format(date_create($b_k->acilis_tarih), "d-m-Y"); ?></td>
+                <td><?php ?></td>
+                <td><?php echo "Hesap açılış Bakiyesi"; ?></td>
+                <td><?php echo $b_k->acilis_bakiye; ?></td>
+                <td><?php echo $b_k->acilis_bakiye; ?></td>
+            </tr>
+
+        <?php endif;
+
+        if ($veri->veri):
+            foreach ($veri->veri as $haraketler):
+                echo  "<tr><td>";
+                $bk = 0;
+                $islem =  $this->help("islemaciklamalar")->islemler($haraketler->islem);
+                $bk = $islem["key"];
+                echo $islem["value"];
+                echo  "</td><td>";
+                echo date_format(date_create($haraketler->tarih), "d-m-Y");
+                echo  "</td><td>";
+                    if($bk==1 && $id != $haraketler->cikis_b_k){
+                        echo  $cls->b_k_ad($haraketler->cikis_b_k);
+                    }
+                    elseif ($bk==1 && $id != $haraketler->giris_b_k) {
+                        echo  $cls->b_k_ad($haraketler->giris_b_k);
+                    }
+                    echo  "</td><td>";
+                        if($bk==1 && !$haraketler->aciklama){
+                            echo    "<span class=\"caption-subject font-green bold uppercase\" >".$cls->b_k_ad($haraketler->cikis_b_k) ." <i class=\"fa fa-long-arrow-right \" aria-hidden=\"true\"></i> ".$cls->b_k_ad($haraketler->giris_b_k) ."</span>";
+                        }
+                        else  { echo $haraketler->aciklama; }
+                    echo  "</td><td>";
+
+
+                        if($haraketler->cikis_b_k == $id){
+                            echo "- $haraketler->cikan_miktar";
+                        }
+                        elseif($haraketler->giris_b_k == $id) {  echo  $haraketler->giris_miktar ;}
+
+                        echo  "</td><td>";
+
+                        if($haraketler->cikis_b_k == $id){  echo  $haraketler->cikan_hesap_son_miktar;}
+                        elseif($haraketler->giris_b_k == $id) {  echo  $haraketler->giris_hesap_son_miktar; }
+
+
+                 echo  "</td></tr>";
+            endforeach;  endif;
+    }
+
+
+    function bankakasalist(){
+
+        $sayfa = $this->val->sayfa;
+        $i = ($this->val->sayfa - 1) * SAYFALAMA_ADET;
+        $veri = $this->Model("nakit/anasayfa")->banka_kasa_list($sayfa);
+        if ($veri->veri):
+
+            foreach ($veri->veri as $banka_kasa):
+                $i++; ?>
+              <tr class="gradeX odd sil_<?php echo $banka_kasa->id; ?>" role="row">
+                  <td>
+                      <label>
+                          <span><?php echo $i; ?></span>
+                      </label>
+                  </td>
+                  <td>
+                      <span>  <?php if ($banka_kasa->b_k == "KASA") {
+                                    echo "<i class=\"fa fa-money font-green-haze fa-lg\"></i>";
+                                } else {
+                                    echo "<i class=\"fa fa-institution font-green-haze fa-lg\"></i>";
+                                } ?>
+                      </span>
+                  </td>
+                  <td class="sorting_1"><a href="<?php SELF::go('nakit/bk_detay/id/' . $banka_kasa->id) ?>"><?php echo $banka_kasa->ad; ?> </a>
+                  </td>
+                  <td>
+                      <span>  <?php echo $banka_kasa->iban; ?>  </span>
+                  </td>
+                  <td class="center">
+                      <span>    <?php echo $banka_kasa->acilis_bakiye; ?>  </span>
+                  </td>
+                  <td>
+                      <span>  <?php echo $banka_kasa->acilis_doviz; ?>  </span>
+                  </td>
+              </tr>
+            <?php endforeach; endif;
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
     function hizmeturunsayfalama()
     {
         $sayfa = $this->val->sayfa;

@@ -545,21 +545,35 @@ location.replace(ANASAYFA +"/nakit/bk_detay/id/"+cikis_b_k);
     }
 
 
-    function BakiyeSabitle(id) {
-         var aciklama = $("#bakiye_sabitle_aciklama").val();
-         var tarih =  $("#bakiye_sabitle_tarih").val();
-         var mebla = $("#bakiye_sabitle_meblag").val();
-        $.post( ANASAYFA+"/nakit/bakiyesabitle",{id : id,aciklama : aciklama, tarih:tarih,bakiye:mebla, doviz : sayfakur}).done(function( data ) {
-            if(1 <= data){
-                alert("BANKA/KASA BAKİYE SABİTLEME İŞLEMİ BAŞARILI.");
-                location.replace(ANASAYFA +"/nakit/kasa_banka");
-            }
-            else{
-                alert("İŞLEM BAŞARISIZ ! ");
-            }
+function BakiyeSabitle(id) {
+    var aciklama = $("#bakiye_sabitle_aciklama").val();
+    var tarih =  $("#bakiye_sabitle_tarih").val();
+    var mebla = $("#bakiye_sabitle_meblag").val();
+    $.post( ANASAYFA+"/nakit/bakiyesabitle",{id : id,aciklama : aciklama, tarih:tarih,bakiye:mebla, doviz : sayfakur}).done(function( data ) {
+        if(1 <= data){
+            alert("BANKA/KASA BAKİYE SABİTLEME İŞLEMİ BAŞARILI.");
+            location.replace(ANASAYFA +"/nakit/kasa_banka");
+        }
+        else{
+            alert("İŞLEM BAŞARISIZ ! ");
+        }
 
-        });
+    });
 
-    }
+}
+function sil(id) {
+
+    $.post( ANASAYFA+"/nakit/bksil",{id : id}).done(function( data ) {
+        if(data == id){
+            alert("BANKA/KASA SİLME İŞLEMİ BAŞARILI.");
+            location.replace(ANASAYFA +"/nakit/kasa_banka");
+        }
+        else{
+            alert("İŞLEM BAŞARISIZ ! ");
+        }
+
+    });
+
+}
 
 

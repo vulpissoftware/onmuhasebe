@@ -85,6 +85,13 @@
 <!-- END THEME LAYOUT SCRIPTS -->
 
 <script>
+
+    window.onload=function(){
+
+        history.pushState(window.location.pathname,null, '<?php echo SITE; ?>/vulpis');
+
+    }
+
     (function ($) {
         $.fn.datepicker.dates['tr'] = {
             days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],

@@ -29,7 +29,15 @@ class anasayfa_sql extends load
         return $id;
 
     }
+    function irsaliyeler($sira = 1, $gosterim_adet = SAYFALAMA_ADET)
+    {
 
+        $this->data->toplam = $this->db->get_var("select count(id) from irsaliye WHERE arsiv=0");
+        $this->data->sayfa = ceil($this->data->toplam / $gosterim_adet);
+        $ilk = ($sira - 1) * $gosterim_adet;
+        $this->data->veri = $this->db->get_results("select * from irsaliye WHERE arsiv=0 LIMIT $ilk , $gosterim_adet");
+        return $this->data;
+    }
     function urunler($sira = 1, $gosterim_adet = SAYFALAMA_ADET)
     {
 
